@@ -288,10 +288,16 @@ async function loadQuestion() {
 
 function renderWordQuestion(q) {
   correctAnswer = q.choices[q.answer];
-  const choicesHTML = q.choices.map(c =>
-    `<button class="choice-btn" onclick="checkWord(this,'${c.replace(/'/g,"\\'")}',${JSON.stringify(correctAnswer)},${JSON.stringify(q.explanation)})">${c}</button>`
+  window._wqData = { choices: q.choices, correct: correctAnswer, explanation: q.explanation };
+  const choicesHTML = q.choices.map((c, i) =>
+    `<button class="choice-btn" onclick="checkWordByIndex(this,${i})">${c}</button>`
   ).join("");
   document.getElementById("game-card").innerHTML = `<div class="card-deco word-deco"></div><div class="q-label word">📘 단어 퀴즈 · 레벨 ${level} (${getGradeLabel()})</div><div class="question-text">"${q.word}"</div><div class="question-hint">💡 ${q.hint}</div><div class="choices">${choicesHTML}</div><div class="feedback" id="feedback"></div>`;
+}
+
+function checkWordByIndex(btn, idx) {
+  const { choices, correct, explanation } = window._wqData;
+  checkWord(btn, choices[idx], correct, explanation);
 }
 
 function renderBlankQuestion(q) {
