@@ -161,7 +161,7 @@ body{
   <div class="field-label">Anthropic API 키</div>
   <input class="text-input api-input" id="api-key-input" type="password" placeholder="sk-ant-..."/>
   <p class="saved-notice" id="saved-notice"></p>
-  <button class="start-btn" id="start-btn">🚀 게임 시작!</button>
+  <button class="start-btn" id="start-btn" onclick="startGame()">🚀 게임 시작!</button>
   <p style="font-size:11px;color:#78909C;margin-top:8px;cursor:pointer;" onclick="clearSavedKey()">🗑 저장된 API 키 삭제</p>
 <p class="error-msg" id="setup-error">이름과 API 키를 모두 입력해주세요.</p>
 </div>
@@ -171,8 +171,8 @@ body{
   <div class="header">
     <div class="logo">말랑<span>말랑</span> 🎮</div>
     <div class="header-right">
-      <button class="icon-btn" id="home-btn">🏠 홈</button>
-      <button class="icon-btn" id="key-btn">키 변경</button>
+      <button class="icon-btn" id="home-btn" onclick="showHomeScreen()">🏠 홈</button>
+      <button class="icon-btn" id="key-btn" onclick="resetGame()">키 변경</button>
     </div>
   </div>
   <div class="statusbar">
@@ -189,8 +189,8 @@ body{
     <div class="levelbar-bg"><div class="levelbar-fill" id="levelbar" style="width:0%"></div></div>
   </div>
   <div class="mode-tabs">
-    <button class="tab-btn word active" id="tab-word">📘 단어 퀴즈</button>
-    <button class="tab-btn blank" id="tab-blank">✏️ 빈칸 채우기</button>
+    <button class="tab-btn word active" id="tab-word" onclick="switchMode('word')">📘 단어 퀴즈</button>
+    <button class="tab-btn blank" id="tab-blank" onclick="switchMode('blank')">✏️ 빈칸 채우기</button>
   </div>
   <div class="game-card" id="game-card">
     <div class="loading">
@@ -200,8 +200,8 @@ body{
     </div>
   </div>
   <div class="btn-row">
-    <button class="next-btn" id="next-btn">다음 문제 →</button>
-    <button class="share-btn" id="share-btn">카카오 공유 💬</button>
+    <button class="next-btn" id="next-btn" onclick="loadQuestion()">다음 문제 →</button>
+    <button class="share-btn" id="share-btn" onclick="shareResult()">카카오 공유 💬</button>
   </div>
 </div>
 
@@ -254,14 +254,15 @@ window.addEventListener("DOMContentLoaded",()=>{
 function addTap(id,fn){
   const el=document.getElementById(id);
   if(!el)return;
-  let busy=false;
-  function fire(){
-    if(busy)return;
-    busy=true;
-    setTimeout(()=>busy=false,350);
-    fn();
+  // onclick이 없는 경우 보조로 pointerup 추가
+  if(!el.onclick){
+    let busy=false;
+    el.addEventListener("pointerup",function(){
+      if(busy)return;busy=true;
+      setTimeout(()=>busy=false,350);
+      fn();
+    });
   }
-  el.addEventListener("pointerup",fire);
 }
 function show(id){document.getElementById(id).style.display="block";}
 function hide(id){document.getElementById(id).style.display="none";}
